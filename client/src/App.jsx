@@ -1,11 +1,16 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import ClientPage from './pages/ClientPage';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { ClientCoffeeProvider } from './context/ClientCoffeeContext';
+import ClientRoutes from './routes/clientRoutes';
 
-const ClientRoutes = () => (
-  <Routes>
-    <Route path="/" element={<ClientPage />} />
-  </Routes>
-);
+const App = () => {
+  return (
+    <Router>
+      <ClientCoffeeProvider>
+        <ClientRoutes />
+      </ClientCoffeeProvider>
+    </Router>
+  );
+};
 
-export default ClientRoutes;
+export default App;

@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+const API_URL = 'https://crudapi.co.uk/api/v1';
+const API_KEY = '630GAJaFqUOxuG0RbedTew8TTxaUDcc29YzPEHySDXQiN6fEWA';
+
 const AdminCoffeeContext = createContext();
 
 export const useAdminCoffeeContext = () => useContext(AdminCoffeeContext);
@@ -7,114 +10,92 @@ export const useAdminCoffeeContext = () => useContext(AdminCoffeeContext);
 export const AdminCoffeeProvider = ({ children }) => {
   const [coffees, setCoffees] = useState([]);
   const [ingredients, setIngredients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const getHeaders = () => ({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${API_KEY}`,
+  });
 
   useEffect(() => {
-    fetchCoffees();
-    fetchIngredients();
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [coffeesResponse, ingredientsResponse] = await Promise.all([
+          fetch(`${API_URL}/coffees`, { headers: getHeaders() }),
+          fetch(`${API_URL}/ingredients`, { headers: getHeaders() }),
+        ]);
+        const coffeesData = await coffeesResponse.json();
+        const ingredientsData = await ingredientsResponse.json();
+        setCoffees(coffeesData.data);
+        setIngredients(ingredientsData.data);
+      } catch (error) {
+        setError(error.message || 'Failed to fetch data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const fetchCoffees = async () => {
-    try {
-      const response = await fetch('https://crudapi.co.uk/api/v1/coffees');
-      const data = await response.json();
-      setCoffees(data.data);
-    } catch (error) {
-      console.error('Error fetching coffees:', error);
-    }
+  const handleFetchError = (error) => {
+    console.error(error);
+    setError(error.message || 'An error occurred');
   };
 
-  const fetchIngredients = async () => {
+  const addItem = async (endpoint, item, setItemState) => {
     try {
-      const response = await fetch('https://crudapi.co.uk/api/v1/ingredients');
-      const data = await response.json();
-      setIngredients(data.data);
-    } catch (error) {
-      console.error('Error fetching ingredients:', error);
-    }
-  };
-
-  const addCoffee = async (coffee) => {
-    try {
-      const response = await fetch('https://crudapi.co.uk/api/v1/coffees', {
+      const response = await fetch(`${API_URL}/${endpoint}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(coffee),
+        headers: getHeaders(),
+        body: JSON.stringify(item),
       });
       const data = await response.json();
-      setCoffees([...coffees, data.data]);
+      setItemState((prevItems) => [...prevItems, data.data]);
     } catch (error) {
-      console.error('Error adding coffee:', error);
+      handleFetchError(error);
     }
   };
 
-  const addIngredient = async (ingredient) => {
+  const editItem = async (endpoint, id, updatedItem, setItemState) => {
     try {
-      const response = await fetch('https://crudapi.co.uk/api/v1/ingredients', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(ingredient),
-      });
-      const data = await response.json();
-      setIngredients([...ingredients, data.data]);
-    } catch (error) {
-      console.error('Error adding ingredient:', error);
-    }
-  };
-
-  const editCoffee = async (coffeeId, updatedCoffee) => {
-    try {
-      const response = await fetch(`https://crudapi.co.uk/api/v1/coffees/${coffeeId}`, {
+      const response = await fetch(`${API_URL}/${endpoint}/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedCoffee),
+        headers: getHeaders(),
+        body: JSON.stringify(updatedItem),
       });
       const data = await response.json();
-      setCoffees(coffees.map(coffee => (coffee.id === coffeeId ? data.data : coffee)));
+      setItemState((prevItems) =>
+        prevItems.map((item) => (item.id === id ? data.data : item))
+      );
     } catch (error) {
-      console.error('Error editing coffee:', error);
+      handleFetchError(error);
     }
   };
 
-  const editIngredient = async (ingredientId, updatedIngredient) => {
-    try {
-      const response = await fetch(`https://crudapi.co.uk/api/v1/ingredients/${ingredientId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedIngredient),
-      });
-      const data = await response.json();
-      setIngredients(ingredients.map(ingredient => (ingredient.id === ingredientId ? data.data : ingredient)));
-    } catch (error) {
-      console.error('Error editing ingredient:', error);
-    }
-  };
-
-  const submitCoffee = async (coffee) => {
-    if (coffee.id) {
-      await editCoffee(coffee.id, coffee);
+  const submitItem = async (item, type) => {
+    if (item.id) {
+      await editItem(type, item.id, item, type === 'coffees' ? setCoffees : setIngredients);
     } else {
-      await addCoffee(coffee);
-    }
-  };
-
-  const submitIngredient = async (ingredient) => {
-    if (ingredient.id) {
-      await editIngredient(ingredient.id, ingredient);
-    } else {
-      await addIngredient(ingredient);
+      await addItem(type, item, type === 'coffees' ? setCoffees : setIngredients);
     }
   };
 
   return (
-    <AdminCoffeeContext.Provider value={{ coffees, ingredients, addCoffee, addIngredient, editCoffee, editIngredient, submitCoffee, submitIngredient }}>
+    <AdminCoffeeContext.Provider value={{
+      coffees,
+      ingredients,
+      loading,
+      error,
+      addCoffee: (coffee) => addItem('coffees', coffee, setCoffees),
+      addIngredient: (ingredient) => addItem('ingredients', ingredient, setIngredients),
+      editCoffee: (id, updatedCoffee) => editItem('coffees', id, updatedCoffee, setCoffees),
+      editIngredient: (id, updatedIngredient) => editItem('ingredients', id, updatedIngredient, setIngredients),
+      submitCoffee: (coffee) => submitItem(coffee, 'coffees'),
+      submitIngredient: (ingredient) => submitItem(ingredient, 'ingredients'),
+    }}>
       {children}
     </AdminCoffeeContext.Provider>
   );
