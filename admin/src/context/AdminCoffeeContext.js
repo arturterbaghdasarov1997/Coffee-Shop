@@ -23,12 +23,13 @@ export const AdminCoffeeProvider = ({ children }) => {
             console.log('Fetching coffees...');
             setLoading(true);
             const response = await fetch(`${API_URL}/coffees`, { headers: getHeaders() });
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             console.log('Coffees fetched:', data);
             setCoffees(data.data);
         } catch (error) {
             console.error('Error fetching coffees:', error);
-            setError(error.message || 'Failed to fetch data');
+            setError(error.message || 'Failed to fetch coffees');
         } finally {
             setLoading(false);
         }
@@ -39,12 +40,13 @@ export const AdminCoffeeProvider = ({ children }) => {
             console.log('Fetching ingredients...');
             setLoading(true);
             const response = await fetch(`${API_URL}/ingredients`, { headers: getHeaders() });
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             console.log('Ingredients fetched:', data);
             setIngredients(data.data);
         } catch (error) {
             console.error('Error fetching ingredients:', error);
-            setError(error.message || 'Failed to fetch data');
+            setError(error.message || 'Failed to fetch ingredients');
         } finally {
             setLoading(false);
         }
@@ -55,11 +57,6 @@ export const AdminCoffeeProvider = ({ children }) => {
         fetchIngredients();
     }, [fetchCoffees, fetchIngredients]);
 
-    const handleFetchError = (error) => {
-        console.error(error);
-        setError(error.message || 'An error occurred');
-    };
-
     const addItem = async (endpoint, item, setItemState) => {
         try {
             const response = await fetch(`${API_URL}/${endpoint}`, {
@@ -67,10 +64,12 @@ export const AdminCoffeeProvider = ({ children }) => {
                 headers: getHeaders(),
                 body: JSON.stringify(item),
             });
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             setItemState((prevItems) => [...prevItems, data.data]);
         } catch (error) {
-            handleFetchError(error);
+            console.error('Error adding item:', error);
+            setError(error.message || 'Failed to add item');
         }
     };
 
@@ -81,12 +80,14 @@ export const AdminCoffeeProvider = ({ children }) => {
                 headers: getHeaders(),
                 body: JSON.stringify(updatedItem),
             });
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             setItemState((prevItems) =>
                 prevItems.map((item) => (item.id === id ? data.data : item))
             );
         } catch (error) {
-            handleFetchError(error);
+            console.error('Error editing item:', error);
+            setError(error.message || 'Failed to edit item');
         }
     };
 
