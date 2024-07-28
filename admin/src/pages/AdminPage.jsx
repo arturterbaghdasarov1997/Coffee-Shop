@@ -1,6 +1,6 @@
 import React from 'react';
 import CoffeeForm from '../components/CoffeeForm';
-import IngredientForm from '../components/ingredientForm';
+import IngredientForm from '../components/IngredientForm'
 import CoffeeList from '../components/CoffeeList';
 import IngredientList from '../components/IngredientList';
 
