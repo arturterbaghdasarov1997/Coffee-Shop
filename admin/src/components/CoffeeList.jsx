@@ -1,8 +1,8 @@
-import React, { useContext, useEffect } from 'react';
-import { AppContext } from '../AppContext';
+import React, { useEffect } from 'react';
+import { useAdminCoffeeContext } from '../context/AdminCoffeeContext';
 
 function CoffeeList() {
-    const { coffees, fetchCoffees, ingredients } = useContext(AppContext);
+    const { coffees, ingredients, fetchCoffees, loading, error } = useAdminCoffeeContext();
 
     useEffect(() => {
         fetchCoffees();
@@ -14,8 +14,11 @@ function CoffeeList() {
             return ingredient ? ingredient.price : 0;
         });
         const totalPrice = 2 + ingredientPrices.reduce((acc, price) => acc + parseFloat(price), 0);
-        return totalPrice.toFixed(2); 
+        return totalPrice.toFixed(2);
     };
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error}</p>;
 
     return (
         <div>
