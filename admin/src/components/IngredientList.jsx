@@ -1,12 +1,15 @@
-import React, { useContext, useEffect } from 'react';
-import { AppContext } from '../AppContext';
+import React, { useEffect } from 'react';
+import { useAdminCoffeeContext } from '../context/AdminCoffeeContext';
 
 function IngredientList() {
-    const { ingredients, fetchIngredients } = useContext(AppContext);
+    const { ingredients, fetchIngredients, loading, error } = useAdminCoffeeContext();
 
     useEffect(() => {
         fetchIngredients();
     }, [fetchIngredients]);
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error}</p>;
 
     return (
         <div>
