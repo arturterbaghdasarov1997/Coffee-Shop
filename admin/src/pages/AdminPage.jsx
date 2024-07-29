@@ -13,6 +13,9 @@ const AdminPage = () => {
         fetchIngredients();
     }, [fetchCoffees, fetchIngredients]);
 
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p className="error-message">Error: {error}</p>;
+
     return (
         <div className="container">
             <h1>Admin Dashboard</h1>
@@ -25,13 +28,7 @@ const AdminPage = () => {
             </div>
             
             <div className="list-section">
-                {loading && <p>Loading...</p>}
-                {error && <p>Error: {error}</p>}
-                
-                <h2>Coffee List</h2>
                 <CoffeeList />
-                
-                <h2>Ingredient List</h2>
                 <IngredientList />
             </div>
         </div>

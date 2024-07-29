@@ -10,7 +10,6 @@ export const useAdminCoffeeContext = () => useContext(AdminCoffeeContext);
 export const AdminCoffeeProvider = ({ children }) => {
     const [coffees, setCoffees] = useState([]);
     const [ingredients, setIngredients] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const getHeaders = () => ({
@@ -19,36 +18,28 @@ export const AdminCoffeeProvider = ({ children }) => {
     });
 
     const fetchCoffees = useCallback(async () => {
+        setError(null);
         try {
-            console.log('Fetching coffees...');
-            setLoading(true);
             const response = await fetch(`${API_URL}/coffees`, { headers: getHeaders() });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
-            console.log('Coffees fetched:', data);
-            setCoffees(data.data);
+            setCoffees(data.data || []);
         } catch (error) {
             console.error('Error fetching coffees:', error);
             setError(error.message || 'Failed to fetch coffees');
-        } finally {
-            setLoading(false);
         }
     }, []);
 
     const fetchIngredients = useCallback(async () => {
+        setError(null);
         try {
-            console.log('Fetching ingredients...');
-            setLoading(true);
             const response = await fetch(`${API_URL}/ingredients`, { headers: getHeaders() });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
-            console.log('Ingredients fetched:', data);
-            setIngredients(data.data);
+            setIngredients(data.data || []);
         } catch (error) {
             console.error('Error fetching ingredients:', error);
             setError(error.message || 'Failed to fetch ingredients');
-        } finally {
-            setLoading(false);
         }
     }, []);
 
@@ -103,7 +94,6 @@ export const AdminCoffeeProvider = ({ children }) => {
         <AdminCoffeeContext.Provider value={{
             coffees,
             ingredients,
-            loading,
             error,
             fetchCoffees,
             fetchIngredients,
