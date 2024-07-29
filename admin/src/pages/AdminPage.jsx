@@ -4,6 +4,7 @@ import IngredientForm from '../components/IngredientForm';
 import CoffeeList from '../components/CoffeeList';
 import IngredientList from '../components/IngredientList';
 import { useAdminCoffeeContext } from '../context/AdminCoffeeContext';
+import '../App.css';
 
 const AdminPage = () => {
     const { fetchCoffees, fetchIngredients, loading, error } = useAdminCoffeeContext();

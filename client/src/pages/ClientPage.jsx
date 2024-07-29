@@ -3,6 +3,7 @@ import CoffeeSelection from '../components/CoffeeSelection';
 import IngredientSelection from '../components/IngredientSelection';
 import Sum from '../components/Sum';
 import { useClientCoffeeContext } from '../context/ClientCoffeeContext';
+import '../App.css';
 
 const ClientPage = () => {
   const { coffees, ingredients, selectedCoffee, selectedIngredients, handleSelectCoffee, handleToggleIngredient } = useClientCoffeeContext();
