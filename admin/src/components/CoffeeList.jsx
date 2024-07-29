@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useAdminCoffeeContext } from '../context/AdminCoffeeContext';
 
 function CoffeeList() {
-    const { coffees, ingredients, fetchCoffees, loading, error } = useAdminCoffeeContext();
+    const { coffees, ingredients, fetchCoffees, error } = useAdminCoffeeContext();
 
     useEffect(() => {
         fetchCoffees();
@@ -17,7 +17,6 @@ function CoffeeList() {
         return totalPrice.toFixed(2);
     };
 
-    if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
 
     return (

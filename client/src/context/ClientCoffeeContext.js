@@ -36,8 +36,8 @@ export const ClientCoffeeProvider = ({ children }) => {
                     ingredientsResponse.json(),
                 ]);
 
-                setCoffees(coffeesData.data);
-                setIngredients(ingredientsData.data);
+                setCoffees(coffeesData.data || []);
+                setIngredients(ingredientsData.data || []);
             } catch (error) {
                 console.error('Error fetching client data:', error);
             }
