@@ -37,6 +37,7 @@ function CoffeeForm() {
                 placeholder="Title"
                 value={coffee.title}
                 onChange={handleChange}
+                required
             />
             <div>
                 <input
@@ -45,6 +46,7 @@ function CoffeeForm() {
                     placeholder="Description"
                     value={coffee.description}
                     onChange={handleChange}
+                    required
                 />
             </div>
             <div>
