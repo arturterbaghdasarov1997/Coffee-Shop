@@ -23,7 +23,7 @@ export const AdminCoffeeProvider = ({ children }) => {
             const response = await fetch(`${API_URL}/coffees`, { headers: getHeaders() });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
-            setCoffees(data.data || []);
+            setCoffees(data.items || []);
         } catch (error) {
             console.error('Error fetching coffees:', error);
             setError(error.message || 'Failed to fetch coffees');
@@ -36,7 +36,7 @@ export const AdminCoffeeProvider = ({ children }) => {
             const response = await fetch(`${API_URL}/ingredients`, { headers: getHeaders() });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
-            setIngredients(data.data || []);
+            setIngredients(data.items || []);
         } catch (error) {
             console.error('Error fetching ingredients:', error);
             setError(error.message || 'Failed to fetch ingredients');
@@ -53,11 +53,11 @@ export const AdminCoffeeProvider = ({ children }) => {
             const response = await fetch(`${API_URL}/${endpoint}`, {
                 method: 'POST',
                 headers: getHeaders(),
-                body: JSON.stringify(item),
+                body: JSON.stringify([item]),
             });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
-            setItemState((prevItems) => [...prevItems, data.data]);
+            setItemState((prevItems) => [...prevItems, data.items]);
         } catch (error) {
             console.error('Error adding item:', error);
             setError(error.message || 'Failed to add item');
@@ -69,12 +69,12 @@ export const AdminCoffeeProvider = ({ children }) => {
             const response = await fetch(`${API_URL}/${endpoint}/${id}`, {
                 method: 'PUT',
                 headers: getHeaders(),
-                body: JSON.stringify(updatedItem),
+                body: JSON.stringify([updatedItem]),
             });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             setItemState((prevItems) =>
-                prevItems.map((item) => (item.id === id ? data.data : item))
+                prevItems.map((item) => (item.id === id ? data.items : item))
             );
         } catch (error) {
             console.error('Error editing item:', error);
