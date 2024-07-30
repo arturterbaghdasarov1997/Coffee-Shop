@@ -48,7 +48,6 @@ export const ClientCoffeeProvider = ({ children }) => {
 
     const handleSelectCoffee = (coffee) => {
         setSelectedCoffee(coffee);
-        // Optionally clear the selected ingredient when a new coffee is selected
         setSelectedIngredient(null);
     };
 
