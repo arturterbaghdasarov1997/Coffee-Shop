@@ -8,7 +8,7 @@ function CoffeeList() {
         fetchCoffees();
     }, [fetchCoffees]);
 
-    if (error) return <p>Error: {error}</p>;
+    if (error) return <p>Error: {error} </p>;
 
     return (
         <div>
@@ -18,6 +18,7 @@ function CoffeeList() {
                     <li key={coffee.id}>
                         <h3>{coffee.title}</h3>
                         <p>{coffee.description}</p>
+                        <p>Price: ₾{coffee.price}</p>
                     </li>
                 ))}
             </ul>
