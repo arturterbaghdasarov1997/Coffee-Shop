@@ -20,7 +20,8 @@ const CoffeeSelection = ({ coffees = [], selectedCoffee, onSelectCoffee }) => {
               color: 'brown',
             }}
           >
-            {coffee.title} - ₾2
+            <p>{coffee.title} - ₾{coffee.price}</p>
+
           </li>
         ))}
       </ul>
