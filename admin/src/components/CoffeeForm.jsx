@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useAdminCoffeeContext } from '../context/AdminCoffeeContext';
+import Sum from './Sum';
 
 function CoffeeForm() {
     const { ingredients, submitCoffee, submitIngredient } = useAdminCoffeeContext();
 
-    const [coffee, setCoffee] = useState({ title: "", description: "", ingredients: [] });
+    const [coffee, setCoffee] = useState({ title: "", description: "", price: "", ingredients: [] });
     const [ingredient, setIngredient] = useState({ name: '', price: '', description: '' });
 
     const handleCoffeeChange = (e) => {
@@ -20,7 +21,7 @@ function CoffeeForm() {
         try {
             await submitIngredient(ingredient);
             await submitCoffee(coffee);
-            setCoffee({ title: "", description: "", ingredients: [] });
+            setCoffee({ title: "", description: "", price: "", ingredients: [] });
             setIngredient({ name: '', price: '', description: '' });
         } catch (error) {
             console.error('Error creating coffee or ingredient:', error);
@@ -45,6 +46,14 @@ function CoffeeForm() {
                 onChange={handleCoffeeChange}
                 required
             />
+            <input
+                type="number"
+                name="price"
+                placeholder="Price"
+                value={coffee.price}
+                onChange={handleCoffeeChange}
+                required
+            />
 
             <h2>Add New Ingredient</h2>
             <input
@@ -63,6 +72,8 @@ function CoffeeForm() {
                 onChange={handleIngredientChange}
                 required
             />
+
+            <Sum coffee={coffee} ingredient={ingredient} />
 
             <button type="submit">Add Coffee and Ingredient</button>
         </form>
