@@ -1,33 +1,31 @@
-import React, { useState } from "react";
-import { useAdminCoffeeContext } from "../context/AdminCoffeeContext";
+import React, { useState } from 'react';
+import { useAdminCoffeeContext } from '../context/AdminCoffeeContext';
 
 function CoffeeForm() {
+    const { ingredients, submitCoffee, submitIngredient } = useAdminCoffeeContext();
+
     const [coffee, setCoffee] = useState({ title: "", description: "", ingredients: [] });
-    const { ingredients, submitCoffee } = useAdminCoffeeContext();
+    const [ingredient, setIngredient] = useState({ name: '', price: '', description: '' });
 
-    const handleChange = (e) => {
+    const handleCoffeeChange = (e) => {
         setCoffee({ ...coffee, [e.target.name]: e.target.value });
-    }
+    };
 
-    const ingredientChange = (ingredientId) => {
-        setCoffee(prevState => {
-            const isSelected = prevState.ingredients.includes(ingredientId);
-            const newIngredients = isSelected
-                ? prevState.ingredients.filter(id => id !== ingredientId)
-                : [...prevState.ingredients, ingredientId];
-            return { ...prevState, ingredients: newIngredients };
-        });
-    }
+    const handleIngredientChange = (e) => {
+        setIngredient({ ...ingredient, [e.target.name]: e.target.value });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            await submitIngredient(ingredient);
             await submitCoffee(coffee);
             setCoffee({ title: "", description: "", ingredients: [] });
+            setIngredient({ name: '', price: '', description: '' });
         } catch (error) {
-            console.error('Error creating coffee:', error);
+            console.error('Error creating coffee or ingredient:', error);
         }
-    }
+    };
 
     return (
         <form onSubmit={handleSubmit}>
@@ -36,35 +34,37 @@ function CoffeeForm() {
                 name="title"
                 placeholder="Title"
                 value={coffee.title}
-                onChange={handleChange}
+                onChange={handleCoffeeChange}
                 required
             />
-            <div>
-                <input
-                    type="text"
-                    name="description"
-                    placeholder="Description"
-                    value={coffee.description}
-                    onChange={handleChange}
-                    required
-                />
-            </div>
-            <div>
-                {ingredients.map(ingredient => (
-                    <div key={ingredient.id}>
-                        <input
-                            type="checkbox"
-                            id={`ingredient-${ingredient.id}`}
-                            name="ingredients"
-                            value={ingredient.id}
-                            checked={coffee.ingredients.includes(ingredient.id)}
-                            onChange={() => ingredientChange(ingredient.id)}
-                        />
-                        <label htmlFor={`ingredient-${ingredient.id}`}>{ingredient.name}</label>
-                    </div>
-                ))}
-            </div>
-            <button type="submit">Add Coffee</button>
+            <input
+                type="text"
+                name="description"
+                placeholder="Description"
+                value={coffee.description}
+                onChange={handleCoffeeChange}
+                required
+            />
+
+            <h2>Add New Ingredient</h2>
+            <input
+                type="text"
+                name="name"
+                placeholder="Name"
+                value={ingredient.name}
+                onChange={handleIngredientChange}
+                required
+            />
+            <input
+                type="number"
+                name="price"
+                placeholder="Price"
+                value={ingredient.price}
+                onChange={handleIngredientChange}
+                required
+            />
+
+            <button type="submit">Add Coffee and Ingredient</button>
         </form>
     );
 }
