@@ -17,8 +17,9 @@ const AdminPage = () => {
 
     return (
         <div className="container">
-            <h1>Admin Dashboard</h1>
-            
+            <div className='heading'>
+                <h1>Admin Dashboard</h1>
+            </div>
             <div className="form-section">
                 <h2>Add Coffee</h2>
                 <CoffeeForm />
