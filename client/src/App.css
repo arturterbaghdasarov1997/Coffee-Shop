@@ -6,6 +6,7 @@
   flex-direction: column;
   max-width: 1000px;
   background-color: burlywood;
+  max-width: 2000px;
   height: 100vh;
 }
 
@@ -18,9 +19,11 @@ h1 {
 .coffee-list {
   border: 1px solid brown;
   border-radius: 15px;
+  max-width: 1000px;
 }
 
 .ingredient-list {
   border: 1px solid brown;
   border-radius: 15px;
+  max-width: 1000px;
 }
