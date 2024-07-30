@@ -6,26 +6,35 @@ import { useClientCoffeeContext } from '../context/ClientCoffeeContext';
 import '../App.css';
 
 const ClientPage = () => {
-  const { coffees, ingredients, selectedCoffee, selectedIngredients, handleSelectCoffee, handleToggleIngredient } = useClientCoffeeContext();
+  const { coffees, ingredients, selectedCoffee, selectedIngredient, handleSelectCoffee, handleToggleIngredient } = useClientCoffeeContext();
 
   const calculatePrice = () => {
-    const ingredientSum = selectedIngredients.reduce((sum, ingredient) => sum + parseFloat(ingredient.price), 0);
-    return selectedCoffee ? parseFloat(selectedCoffee.price) + ingredientSum : 0;
+    const coffeePrice = selectedCoffee ? parseFloat(selectedCoffee.price) : 0;
+    const ingredientPrice = selectedIngredient ? parseFloat(selectedIngredient.price) : 0;
+
+    console.log('Coffee Price:', coffeePrice);
+    console.log('Ingredient Price:', ingredientPrice);
+
+    return (isNaN(coffeePrice) ? 2 : coffeePrice) + (isNaN(ingredientPrice));
   };
 
   return (
     <div className="container">
       <h1>Coffee Shop</h1>
-      <CoffeeSelection coffees={coffees} onSelectCoffee={handleSelectCoffee} />
+      <CoffeeSelection
+        coffees={coffees}
+        selectedCoffee={selectedCoffee}
+        onSelectCoffee={handleSelectCoffee}
+      />
       {selectedCoffee && (
         <IngredientSelection
           ingredients={ingredients}
-          selectedIngredients={selectedIngredients}
+          selectedIngredient={selectedIngredient}
           onToggleIngredient={handleToggleIngredient}
         />
       )}
       {selectedCoffee && (
-        <Sum coffee={selectedCoffee} ingredients={selectedIngredients} totalPrice={calculatePrice()} />
+        <Sum totalPrice={calculatePrice()} />
       )}
     </div>
   );
