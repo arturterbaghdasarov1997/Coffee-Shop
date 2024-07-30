@@ -11,7 +11,7 @@ export const ClientCoffeeProvider = ({ children }) => {
     const [coffees, setCoffees] = useState([]);
     const [ingredients, setIngredients] = useState([]);
     const [selectedCoffee, setSelectedCoffee] = useState(null);
-    const [selectedIngredients, setSelectedIngredients] = useState([]);
+    const [selectedIngredient, setSelectedIngredient] = useState(null);
 
     const getHeaders = () => ({
         'Content-Type': 'application/json',
@@ -36,8 +36,8 @@ export const ClientCoffeeProvider = ({ children }) => {
                     ingredientsResponse.json(),
                 ]);
 
-                setCoffees(coffeesData.data || []);
-                setIngredients(ingredientsData.data || []);
+                setCoffees(coffeesData.items || []);
+                setIngredients(ingredientsData.items || []);
             } catch (error) {
                 console.error('Error fetching client data:', error);
             }
@@ -48,15 +48,12 @@ export const ClientCoffeeProvider = ({ children }) => {
 
     const handleSelectCoffee = (coffee) => {
         setSelectedCoffee(coffee);
-        setSelectedIngredients([]);
+        // Optionally clear the selected ingredient when a new coffee is selected
+        setSelectedIngredient(null);
     };
 
     const handleToggleIngredient = (ingredient) => {
-        setSelectedIngredients((prevIngredients) =>
-            prevIngredients.includes(ingredient.id)
-                ? prevIngredients.filter(id => id !== ingredient.id)
-                : [...prevIngredients, ingredient.id]
-        );
+        setSelectedIngredient(ingredient);
     };
 
     return (
@@ -65,7 +62,7 @@ export const ClientCoffeeProvider = ({ children }) => {
                 coffees,
                 ingredients,
                 selectedCoffee,
-                selectedIngredients,
+                selectedIngredient,
                 handleSelectCoffee,
                 handleToggleIngredient,
             }}
