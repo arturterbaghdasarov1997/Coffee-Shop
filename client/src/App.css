@@ -1,9 +1,3 @@
-.heading {
-  display: flex;
-  justify-content: center;
-  color: brown;
-}
-
 .container {
   margin: 0 auto;
   padding: 20px;
@@ -12,54 +6,21 @@
   flex-direction: column;
   max-width: 1000px;
   background-color: burlywood;
+  height: 100vh;
 }
 
-.form-section {
-  display: flex;
-  flex-direction: column;
-}
-
-.list-section {
-  max-width: 500px;
-  display: flex;
-  flex-direction: row;
-}
-
-h2 {
+h1 {
   color: brown;
-}
-
-p {
-  font-weight: bold;
-}
-
-.all-list {
   display: flex;
+  justify-content: center;
 }
 
 .coffee-list {
   border: 1px solid brown;
   border-radius: 15px;
-  padding: 10px;
 }
 
-.ingredients-list {
+.ingredient-list {
   border: 1px solid brown;
   border-radius: 15px;
-  padding: 10px;
-}
-
-button {
-  background-color: brown;
-  color: white;
-  width: 200px;
-  height: 30px;
-  border-radius: 10px;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 500px;
 }
