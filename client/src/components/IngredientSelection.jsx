@@ -9,6 +9,7 @@ const IngredientSelection = ({ ingredients, selectedIngredient, onToggleIngredie
     return (
         <div className="ingredientSelection">
             <h2>Select an Ingredient</h2>
+            <div className="ingredient-list">
             <ul>
                 {ingredients.map((ingredient) => (
                     <li key={ingredient.id}>
@@ -22,6 +23,7 @@ const IngredientSelection = ({ ingredients, selectedIngredient, onToggleIngredie
                     </li>
                 ))}
             </ul>
+            </div>
         </div>
     );
 };
