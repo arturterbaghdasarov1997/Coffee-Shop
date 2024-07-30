@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useAdminCoffeeContext } from '../context/AdminCoffeeContext';
-import Sum from './Sum';
 
 function CoffeeForm() {
     const { ingredients, submitCoffee, submitIngredient } = useAdminCoffeeContext();
@@ -29,7 +28,9 @@ function CoffeeForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form
+            className='form'
+            onSubmit={handleSubmit}>
             <input
                 type="text"
                 name="title"
@@ -72,8 +73,6 @@ function CoffeeForm() {
                 onChange={handleIngredientChange}
                 required
             />
-
-            <Sum coffee={coffee} ingredient={ingredient} />
 
             <button type="submit">Add Coffee and Ingredient</button>
         </form>
