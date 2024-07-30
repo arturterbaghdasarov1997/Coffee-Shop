@@ -8,15 +8,6 @@ function CoffeeList() {
         fetchCoffees();
     }, [fetchCoffees]);
 
-    const getTotalPrice = (coffee) => {
-        const ingredientPrices = coffee.ingredients.map(ingredientId => {
-            const ingredient = ingredients.find(ing => ing.id === ingredientId);
-            return ingredient ? ingredient.price : 0;
-        });
-        const totalPrice = 2 + ingredientPrices.reduce((acc, price) => acc + parseFloat(price), 0);
-        return totalPrice.toFixed(2);
-    };
-
     if (error) return <p>Error: {error}</p>;
 
     return (
@@ -27,11 +18,23 @@ function CoffeeList() {
                     <li key={coffee.id}>
                         <h3>{coffee.title}</h3>
                         <p>{coffee.description}</p>
-                        <p>Ingredients: {coffee.ingredients.map(ingredientId => {
-                            const ingredient = ingredients.find(ing => ing.id === ingredientId);
-                            return ingredient ? ingredient.name : 'Unknown';
-                        }).join(', ')}</p>
-                        <p>Price: {getTotalPrice(coffee)} GEL</p>
+                        <p>Ingredients: {
+                            coffee.ingredients && ingredients ? (
+                                coffee.ingredients.map(ingredientId => {
+                                    const ingredient = ingredients.find(ing => ing.id === ingredientId);
+                                    return ingredient ? `${ingredient.name} - ₾${ingredient.price}` : 'Unknown';
+                                }).join(', ')
+                            ) : 'No ingredients available'
+                        }</p>
+                    </li>
+                ))}
+            </ul>
+            <ul>
+                {ingredients.map(ingredient => (
+                    <li key={ingredient.id}>
+                        <h3>{ingredient.name}</h3>
+                        <p>Price: ₾{ingredient.price}</p>
+                        <p>{ingredient.description}</p>
                     </li>
                 ))}
             </ul>

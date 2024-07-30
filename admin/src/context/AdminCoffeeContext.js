@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 
 const API_URL = 'https://crudapi.co.uk/api/v1';
 const API_KEY = '630GAJaFqUOxuG0RbedTew8TTxaUDcc29YzPEHySDXQiN6fEWA';
@@ -25,7 +25,6 @@ export const AdminCoffeeProvider = ({ children }) => {
             const data = await response.json();
             setCoffees(data.items || []);
         } catch (error) {
-            console.error('Error fetching coffees:', error);
             setError(error.message || 'Failed to fetch coffees');
         }
     }, []);
@@ -38,15 +37,9 @@ export const AdminCoffeeProvider = ({ children }) => {
             const data = await response.json();
             setIngredients(data.items || []);
         } catch (error) {
-            console.error('Error fetching ingredients:', error);
             setError(error.message || 'Failed to fetch ingredients');
         }
     }, []);
-
-    useEffect(() => {
-        fetchCoffees();
-        fetchIngredients();
-    }, [fetchCoffees, fetchIngredients]);
 
     const addItem = async (endpoint, item, setItemState) => {
         try {
@@ -57,37 +50,20 @@ export const AdminCoffeeProvider = ({ children }) => {
             });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
-            setItemState((prevItems) => [...prevItems, data.items]);
+            setItemState((prevItems) => [...prevItems, ...data.items]);
         } catch (error) {
-            console.error('Error adding item:', error);
             setError(error.message || 'Failed to add item');
         }
     };
 
-    const editItem = async (endpoint, id, updatedItem, setItemState) => {
-        try {
-            const response = await fetch(`${API_URL}/${endpoint}/${id}`, {
-                method: 'PUT',
-                headers: getHeaders(),
-                body: JSON.stringify([updatedItem]),
-            });
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            const data = await response.json();
-            setItemState((prevItems) =>
-                prevItems.map((item) => (item.id === id ? data.items : item))
-            );
-        } catch (error) {
-            console.error('Error editing item:', error);
-            setError(error.message || 'Failed to edit item');
-        }
+    const submitCoffee = async (coffee) => {
+        await addItem('coffees', coffee, setCoffees);
+        fetchCoffees();
     };
 
-    const submitItem = async (item, type) => {
-        if (item.id) {
-            await editItem(type, item.id, item, type === 'coffees' ? setCoffees : setIngredients);
-        } else {
-            await addItem(type, item, type === 'coffees' ? setCoffees : setIngredients);
-        }
+    const submitIngredient = async (ingredient) => {
+        await addItem('ingredients', ingredient, setIngredients);
+        fetchIngredients();
     };
 
     return (
@@ -97,12 +73,8 @@ export const AdminCoffeeProvider = ({ children }) => {
             error,
             fetchCoffees,
             fetchIngredients,
-            addCoffee: (coffee) => addItem('coffees', coffee, setCoffees),
-            addIngredient: (ingredient) => addItem('ingredients', ingredient, setIngredients),
-            editCoffee: (id, updatedCoffee) => editItem('coffees', id, updatedCoffee, setCoffees),
-            editIngredient: (id, updatedIngredient) => editItem('ingredients', id, updatedIngredient, setIngredients),
-            submitCoffee: (coffee) => submitItem(coffee, 'coffees'),
-            submitIngredient: (ingredient) => submitItem(ingredient, 'ingredients'),
+            submitCoffee,
+            submitIngredient,
         }}>
             {children}
         </AdminCoffeeContext.Provider>
