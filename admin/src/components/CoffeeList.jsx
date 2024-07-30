@@ -18,17 +18,10 @@ function CoffeeList() {
                     <li key={coffee.id}>
                         <h3>{coffee.title}</h3>
                         <p>{coffee.description}</p>
-                        <p>Ingredients: {
-                            coffee.ingredients && ingredients ? (
-                                coffee.ingredients.map(ingredientId => {
-                                    const ingredient = ingredients.find(ing => ing.id === ingredientId);
-                                    return ingredient ? `${ingredient.name} - ₾${ingredient.price}` : 'Unknown';
-                                }).join(', ')
-                            ) : 'No ingredients available'
-                        }</p>
                     </li>
                 ))}
             </ul>
+            <h2>Ingredients</h2>
             <ul>
                 {ingredients.map(ingredient => (
                     <li key={ingredient.id}>
